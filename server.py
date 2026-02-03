@@ -41,6 +41,7 @@ class RelayServer:
         self._capture_task: Optional[asyncio.Task] = None
 
         self._last_content: str = ""
+        self._last_clean: str = ""
         self._last_emitted: str = ""
         self._last_change_time: float = 0
         self._last_emit_time: float = 0
@@ -211,6 +212,7 @@ class RelayServer:
             self._session = None
 
         self._last_content = ""
+        self._last_clean = ""
         self._last_emitted = ""
         await self._send_status()
 
@@ -308,11 +310,14 @@ class RelayServer:
         while self._running and self._session:
             try:
                 content = self._capture_pane()
+                clean = strip_ansi(content).rstrip("\n")
                 now = time.time()
 
-                if content != self._last_content:
+                if clean != self._last_clean:
                     self._last_change_time = now
-                    self._last_content = content
+                    self._last_clean = clean
+
+                self._last_content = content
 
                 time_since_change = now - self._last_change_time
                 time_since_emit = now - self._last_emit_time
