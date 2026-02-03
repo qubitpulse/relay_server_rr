@@ -6,8 +6,8 @@ import logging
 from typing import Optional, Set
 
 try:
-    import websockets
-    from websockets.server import WebSocketServerProtocol
+    from websockets.asyncio.server import serve, ServerConnection
+    from websockets.exceptions import ConnectionClosed
 except ImportError:
     print("Please install websockets: pip install websockets")
     raise
@@ -33,7 +33,7 @@ class RelayServer:
     def __init__(self, host: str = "0.0.0.0", port: int = 8765):
         self.host = host
         self.port = port
-        self._clients: Set[WebSocketServerProtocol] = set()
+        self._clients: Set[ServerConnection] = set()
         self._server = None
 
         self._session: Optional[str] = None
@@ -53,13 +53,9 @@ class RelayServer:
             logger.error("tmux not found. On Mac, install with: brew install tmux")
             return
 
-        self._server = await websockets.serve(
-            self._handle_client,
-            self.host,
-            self.port,
-        )
-        logger.info(f"Relay server started on ws://{self.host}:{self.port}")
-        await self._server.wait_closed()
+        async with serve(self._handle_client, self.host, self.port) as server:
+            logger.info(f"Relay server started on ws://{self.host}:{self.port}")
+            await server.serve_forever()
 
     async def stop(self):
         await self._detach()
@@ -67,7 +63,7 @@ class RelayServer:
             self._server.close()
             await self._server.wait_closed()
 
-    async def _handle_client(self, ws: WebSocketServerProtocol):
+    async def _handle_client(self, ws: ServerConnection):
         logger.info(f"Client connected: {ws.remote_address}")
         self._clients.add(ws)
 
@@ -78,12 +74,12 @@ class RelayServer:
             async for message in ws:
                 await self._handle_message(ws, message)
 
-        except websockets.exceptions.ConnectionClosed:
+        except ConnectionClosed:
             logger.info(f"Client disconnected: {ws.remote_address}")
         finally:
             self._clients.discard(ws)
 
-    async def _handle_message(self, ws: WebSocketServerProtocol, message: str):
+    async def _handle_message(self, ws: ServerConnection, message: str):
         try:
             msg = from_json(message)
 
@@ -96,7 +92,7 @@ class RelayServer:
         except Exception as e:
             logger.error(f"Error handling message: {e}")
 
-    async def _handle_command(self, cmd: Command, ws: WebSocketServerProtocol):
+    async def _handle_command(self, cmd: Command, ws: ServerConnection):
         if cmd.action == "list":
             await self._send_sessions(ws)
 
@@ -127,7 +123,7 @@ class RelayServer:
             return_exceptions=True
         )
 
-    async def _send_status(self, ws: WebSocketServerProtocol = None):
+    async def _send_status(self, ws: ServerConnection = None):
         is_busy = (time.time() - self._last_change_time) < self._debounce_time
         status = Status(
             connected=True,
@@ -139,7 +135,7 @@ class RelayServer:
         else:
             await self._broadcast(status)
 
-    async def _send_sessions(self, ws: WebSocketServerProtocol = None):
+    async def _send_sessions(self, ws: ServerConnection = None):
         sessions = self._list_sessions()
 
         if self._session and self._session not in sessions:
