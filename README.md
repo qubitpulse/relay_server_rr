@@ -3,11 +3,14 @@
 A WebSocket relay server that bridges tmux terminal sessions to remote clients. Run it on any machine with tmux, and control your terminal sessions from a phone, tablet, or any WebSocket client.
 
 ## Quick Start
-
+1. Connect your Mac and iPhone to TailScale VPN (download: https://tailscale.com)
+2. Start Tmux sessions for any terminals you need (download: https://github.com/tmux/tmux/releases)
+3. Start Relay Server
 ```bash
 pip install -r requirements.txt
 python server.py # default port 8765
 ```
+4. Open ReallyRemote on your iPhone, connect and attach to a session.
 
 ## How It Works
 
