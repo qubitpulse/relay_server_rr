@@ -2,7 +2,7 @@
 
 **Really Remote**
 **Particle Waves Technology LLC**
-**Effective Date: February 3, 2026**
+**Effective Date: February 7, 2026**
 
 ## Overview
 
@@ -12,7 +12,7 @@ Really Remote ("the App") is a mobile application that allows users to remotely 
 
 **We do not collect, store, transmit, or process any personal information.**
 
-Particle Waves Technology LLC is founded on the principle that privacy is a natural right — including the principles of personal property, privacy, free speech, and freedom from quartering soldiers in your home. We believe your tools exist for your own productivity, and should not surveil you. Your data belongs to you, your devices are your property, and your information should only be monetized or otherwise used if you explicitly consent to such an action. Without consent of both parties there is no contract, and therefore no grounds to infringe upon your natural rights. Particle Waves Technology LLC provides you with software solutions to multiply your efficiency and creative abilities. Exploiting your information is not part of that goal. We will never store, sell, or exploit your personal data for any purpose.
+Particle Waves Technology LLC is founded on the principle that privacy is a natural right. We believe your tools exist for your own productivity, and should not surveil you. Your devices are your property, and your information should only be monetized or otherwise used if you explicitly consent to such an action. We will never store, sell, or exploit your personal data for any purpose.
 
 Note: When you download the App through the Apple App Store, Apple may collect purchase-related information (such as your Apple ID and device type) as part of their transaction process. This data is collected and managed by Apple under their own privacy policy, not by Particle Waves Technology LLC.
 
