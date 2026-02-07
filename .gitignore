@@ -1,3 +1,6 @@
 # Ignore PyCache folder and contents
 __pycache__/
 *.py[cod]
+
+# VS Code metadata
+.vscode/
